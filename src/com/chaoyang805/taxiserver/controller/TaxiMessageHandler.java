@@ -1,4 +1,4 @@
-package com.chaoyang805.taxiserver;
+package com.chaoyang805.taxiserver.controller;
 
 import com.chaoyang805.taxiserver.model.Destination;
 import com.chaoyang805.taxiserver.model.Driver;
