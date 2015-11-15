@@ -77,19 +77,19 @@ public class TaxiMessageHandler extends IoHandlerAdapter {
         String passengerPhoneNumber = message.getPassengerPhoneNumber();
         if (driverPhoneNumber == null) {
             Passenger passenger = mPassengers.remove(passengerPhoneNumber);
-            //TODO 通知这个乘客周围的司机 他已经掉线
+            //通知这个乘客周围的司机 他已经掉线
             for (Driver driver : mDrivers.values()) {
                 if (isNearBy(passenger, driver) && passenger.isWaitingOrder()) {
                     Message msg = new Message.MessageBuilder()
                             .setRequestType("passenger_offline")
                             .setPassengerName(message.getPassengerName())
-                            .setPassengerPhoneNumber(driverPhoneNumber)
+                            .setPassengerPhoneNumber(passengerPhoneNumber)
                             .build();
                     driver.getSession().write(msg.toString());
                 }
             }
         } else if (passengerPhoneNumber == null) {
-            //TODO 通知这个司机附近的乘客，他已经掉线
+            //通知这个司机附近的乘客，他已经掉线
             Driver driver = mDrivers.remove(driverPhoneNumber);
             for (Passenger passenger : mPassengers.values()){
                 if (isNearBy(passenger,driver)){
@@ -118,10 +118,8 @@ public class TaxiMessageHandler extends IoHandlerAdapter {
                 .setDriverName(message.getDriverName())
                 .setDriverPhoneNumber(message.getDriverPhoneNumber())
                 .setLocation(message.getLocation())
-                .setLocation(message.getLocation())
                 .build();
         passenger.getSession().write(acceptMsg.toString());
-
         //将乘客被接单的信息发送给附近的司机，通知司机端移除这一个乘客的信息
         Message takenMsg = new Message.MessageBuilder()
                 .setRequestType("passenger_taken")
@@ -134,7 +132,7 @@ public class TaxiMessageHandler extends IoHandlerAdapter {
             }
         }
         //将已经被接单的乘客从Map中移除
-        mPassengers.remove(passenger);
+        mPassengers.remove(passenger.getPhoneNumber());
 
     }
 
